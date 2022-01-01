@@ -1,0 +1,916 @@
+#:import utils kivy.utils
+#:import listofitems test.listofitems
+#:import cartitems test.cartitems
+#:import ADDRESS test.ADDRESS
+
+<Circularbtn>:
+    size_hint: None, None
+    size: "40dp","40dp"
+    radius: self.size[0]/2
+    MDIcon:
+        icon: 'cart'
+        halign: 'center'
+        valign: 'center'
+        size: root.size
+        pos: root.pos
+        font_size: root.size[0]*.6
+
+<CartPageSwipe>:
+	title: 'product_name'
+	price: '200'
+	quantity: '1'
+	slug: ''
+	image: '/images/cow.png'
+	size_hint_y: None
+	height: root.height
+	type_swipe: "auto"
+	anchor: 'right'
+	MDCardSwipeLayerBox:
+		padding: "8dp"
+		IconRightWidget:
+			icon: "trash-can"
+            on_release: app.remove_one_item(root.slug)
+
+	MDCardSwipeFrontBox:
+        MDBoxLayout:
+            FitImage:
+                adaptive_size: True
+                source: 'http://{}{}'.format(ADDRESS, root.image)
+#                size_hint: (.1, None)
+                size_hint_y: .9
+                size_hint_x: .2
+            TwoLineAvatarIconListItem:
+#                text: f'{root.title}                      Qts:{root.quantity}'
+                text: "{}                      Qts:{}".format(root.title, root.quantity)
+#                text: root.quantity
+#                secondary_text: f'${root.price} {56}'
+                secondary_text: root.price
+              # IconLeftWidget:
+                IconRightWidget:
+                    icon: "minus"
+                    on_release:
+                        app.remove_one_item(root.slug)
+#                        main_screen.cart_data_refresh()
+
+
+
+<StarButton@MDIconButton>
+	icon: "heart"
+	on_release: self.icon = "heart-outline" if self.icon == "heart" else "heart"
+
+
+<TCard>:
+	title: 'product name'
+	price: 'Price $24'
+	slug: ''
+	image: '/images/chicken.png'
+#	discount_price: 'Price $24'
+	orientation: 'vertical'
+	padding: 5, 0, 5, 5
+	height: self.minimum_height*7
+#	height: dp(300)
+    elevation: dp(7)
+    radius: [dp(5),  dp(5), dp(10), dp(10)]
+    ripple_behavior: True
+	on_press:
+	    root.addtocartpage()
+
+    FloatLayout:
+        adaptive_size: True
+        FitImage:
+        	pos_hint:{'center_x':0.5, 'center_y':0.5}
+        	adaptive_height: True
+            source: 'http://{}{}'.format(ADDRESS, root.image)
+        	size_hint: (1, None)
+        	padding: 0,0,0,5
+            # pos_hint: {'center_x':0.5, 'center_y':0} 
+            size: (0.1, 250)
+    	    radius: [0,  dp(5), dp(10), dp(10)]
+	    
+        StarButton:
+        	pos_hint:{'center_x':.9, 'center_y':.9}
+            halign: 'right'    
+	   	 	
+    	
+    MDLabel:
+    	id: title
+    	adaptive_height: True
+    	text: root.title
+    	halign: 'left' 
+    MDSeparator:
+		height: "1dp"   
+	MDLabel:
+		font_size: dp(12)
+    	adaptive_height: True
+    	text: root.price
+    	halign: 'right' 
+
+<Mainscroll@MDFloatLayout>:
+    size_hint_y: .2
+    TextInput:
+        hint_text: 'Search'
+        size_hint: .9, .4
+        pos_hint: {'center_x':0.5, 'center_y':0.7}
+        font_size: '18sp'
+        cursor_width: '1.5sp'
+        multiline: False
+        background_color: 1, 1, 1, 0
+        foreground_color: rgba(0, 0, 59,255)
+        cursor_color: rgba(0, 0, 59,255)
+
+    MDFloatLayout:
+        pos_hint: {'center_x': .5, 'center_y': .68}
+        size_hint_y: .003
+        size_hint_x: .95
+        md_bg_color: rgba(178, 178, 178, 255)
+
+
+    MDGridLayout:
+        size_hint_y: .4
+        cols: 4
+        md_bg_color: rgba(178, 178, 178, 255)
+        pos_hint: {'center_x':0.5, 'center_y':0.1}
+        Image:
+            source: 'images/goat.png'
+#            pos_hint: {'center_x':0.5, 'center_y':0.6}
+            font_size: '10sp'
+        Image:
+            source: 'images/goat.png'
+#            pos_hint: {'center_x':0.5, 'center_y':0.6}
+            font_size: '10sp'
+        Image:
+            source: 'images/goat.png'
+#            pos_hint: {'center_x':0.5, 'center_y':0.6}
+            font_size: '10sp'
+        Image:
+            source: 'images/goat.png'
+#            pos_hint: {'center_x':0.5, 'center_y':0.6}
+            font_size: '10sp'
+    MDFloatLayout:
+        pos_hint: {'center_x': .5, 'center_y': .42}
+        size_hint_y: .003
+        size_hint_x: .78
+        md_bg_color: rgba(178, 178, 178, 255)
+WindowManager:
+    id: manager
+    name: 'window'
+
+    MainScreen:
+        name: 'main screen'
+        id: main_screen
+        manager:manager
+    LoginScreen:
+        name: 'login screen'
+        id: login screen
+        manager:manager
+
+    SignUpScreen:
+        name: 'signup screen'
+        id: signup screen
+        manager:manager
+
+    AddToCartScreen:
+        name: 'addtocart'
+        id: addtocart
+        manager:manager
+
+    Signin_up:
+        name: 'sign_screen'
+        id: sign_screen
+
+    Checkout:
+        name: 'checkout'
+        id: checkout
+
+<RV>:
+#    id: cart_rv
+#    viewclass: 'Card'
+    cols: 2
+#    data: listofitems
+    RecycleGridLayout:
+        spacing: dp(20)
+        default_size: None, None
+        default_size_hint: 1, None
+        cols: root.cols
+        padding: dp(5)
+        size_hint_y: None
+        height: self.minimum_height
+
+        
+<MainScreen>:
+    id: main_screen
+    rvv: rvv
+    BoxLayout:
+        orientation: 'vertical'
+        
+        MDBottomNavigation:
+            MDBottomNavigationItem:
+                id: screenone
+                text: 'Home'
+                icon: 'home'
+                on_pre_enter:
+                    root.server_request()
+                MDBoxLayout:
+                	orientation: 'vertical'
+                    id: mainpage
+                    Mainscroll:
+                        id: mainscroll
+
+                    RecycleView:
+                        id: rvv
+                        viewclass: 'TCard'
+                        data: listofitems
+                        RecycleGridLayout:
+                            spacing: dp(20)
+                            default_size: None, None
+                            default_size_hint: 1, None
+                            cols: 2
+                            padding: dp(5)
+                            size_hint_y: None
+                            height: self.minimum_height
+
+
+
+            MDBottomNavigationItem:
+                name: 'screen 2'
+                text: 'Review'
+                text_size: '5sp'
+                icon: 'mail'
+			
+				MDBoxLayout:
+					orientation: 'vertical'
+					MDLabel:
+						adaptive_height:True
+						size_hint_y: .2
+						font_size: dp(20)
+	                    text: 'Recent Items'
+                        halign: 'center'
+
+    	            RV:
+    	                cols: 1
+                        data: cartitems
+    	                viewclass: 'CartPageSwipe'
+
+
+            MDBottomNavigationItem:
+                id: cart_page
+                name: 'screen 3'
+                text: 'Cart'
+                icon: 'cart'
+                on_enter:
+                    root.check_auth()
+                    root.cart_page_on_enter()
+#                    root.refresh_view_attrs(self, self.index, cartitems)
+                on_pre_enter:
+                    root.cart_load()
+#                on_data_change
+
+#                cart_data: data
+				MDBoxLayout:
+					orientation: 'vertical'
+					MDLabel:
+						adaptive_height:True
+						size_hint_y: .2
+						font_size: dp(20)
+	                    text: 'Cart Items'
+                        halign: 'center'
+
+    	            RecycleView:
+    	                id: cart_rv
+    	                cols: 1
+                        data: cartitems
+    	                viewclass: 'CartPageSwipe'
+#    	                on_data_changed: refresh_vi.ew_attrs()
+                        RecycleGridLayout:
+                            spacing: dp(20)
+                            default_size: None, None
+                            default_size_hint: 1, None
+                            cols: 1
+                            padding: dp(5)
+                            size_hint_y: None
+                            height: self.minimum_height
+                    Circularbtn:
+                        pos_hint:{"center_x": .9, "center_y":.07}
+                        elevation: 7
+                        on_release: root.manager.current = 'checkout'
+					MDBoxLayout:
+					    total: '20'
+						adpative_height: True
+						size_hint_y: .2
+						padding: dp(20)
+						MDLabel:
+							text: 'Cart Total'
+							font_size: dp(20)
+						MDLabel:
+						    id: total_amount
+							text:''
+							halign: 'right'
+            MDBottomNavigationItem:
+                name: 'screen 4'
+                text: 'Favourite'
+                icon: 'heart'
+
+                MDBoxLayout:
+					orientation: 'vertical'
+					MDLabel:
+						adaptive_height:True
+						size_hint_y: .2
+						font_size: dp(20)
+	                    text: 'Favourite Items'
+                        halign: 'center'
+    	
+    	            RV:
+    	                cols: 1
+                        data: cartitems
+    	                viewclass: 'CartPageSwipe'
+					         
+            MDBottomNavigationItem:
+                name: 'screen 5'
+                text: 'Profile'
+                icon: 'account-circle'
+#				md_bg_color: 255/255, 40/255, 80/255, 1
+                address: address
+                MDBoxLayout:
+#                    adaptive_height: True
+                    orientation: 'vertical'
+                    MDIconButton:
+#                        adaptive_height: True
+                        id: avatar
+#                        size_hint_y: .1
+                        icon: 'account-circle'
+                        user_font_size: '80sp'
+                        pos_hint: {'center_x': 0.5,'center_y': 1}
+                        on_press: root.manager.current = 'sign_screen'
+
+                    MDLabel:
+#                        adaptive_height: True
+                        size_hint_y: .15
+                        halign: 'center'
+                        text: "Click to Signin/up"
+
+                    MDGridLayout:
+#                        adaptive_height: True
+#                        size_hint_y: .8
+                        size_hint_x: 1
+                        pos_hint: {'center_x': 0.5,'center_y': 0.65}
+                        cols: 1
+
+    #                    MDLabel:
+    #                        size_hint_y: .15
+    #                        text: 'Profile'
+    #                        halign: 'center'
+    #
+#                        Widget:
+                        OneLineListItem:
+                            text: "Profile"
+                        OneLineListItem:
+                            text: "Shipping Address"
+                        OneLineListItem:
+                            text: "Billing Address"
+                        OneLineListItem:
+                            text: "Billing Address"
+
+                    MDTextField:
+                        id: address
+                        size_hint_x: .9
+                        pos_hint: {"center_x": .5, "top": .7}
+                        hint_text: "Address"
+                        on_text: root.update_address(self.text)
+
+
+<LoginScreen>:
+    username: username
+    password: password
+    MDFloatLayout:
+        MDIconButton:
+            icon: 'arrow-left'
+            pos_hint: {'center_y': .95}
+            user_font_size: '30sp'
+            theme_text_color: 'Custom'
+            text_color: rgba(26, 24, 58, 255)
+            on_release:
+                root.manager.transition.direction = 'right'
+                root.manager.current = 'main screen'
+
+        MDLabel:
+            text: 'W E L C O M E !'
+            font_size: '26sp'
+            pos_hint: {'center_x': .6, 'center_y': .85}
+            color: rgba(0, 0, 59, 255)
+
+        MDLabel:
+            text: 'Sign in to continue'
+            font_size: '18sp'
+            pos_hint: {'center_x': .6, 'center_y': .8}
+            color: rgba(127, 127, 127, 255)
+
+        MDFloatLayout:
+            size_hint: .75, .07
+            pos_hint: {'center_x': .55, 'center_y': .63}
+            TextInput:
+                id: username
+                size_hint_y: .75
+                pos_hint: {"center_x": .5, "top": .7}
+                hint_text: "Email"
+                font_size: '18sp'
+                cursor_width: '1.5sp'
+                multiline: False
+                background_color: 1, 1, 1, 0
+                foreground_color: rgba(0, 0, 59,255)
+                cursor_color: rgba(0, 0, 59,255)
+            MDFloatLayout:
+                pos_hint: {'center_x': .45, 'center_y': .0}
+                size_hint_y: .03
+                md_bg_color: rgba(178, 178, 178, 255)
+
+        MDFloatLayout:
+            size_hint: .75, .07
+            pos_hint: {'center_x': .55, 'center_y': .53}
+            TextInput:
+                id: password
+                size_hint_y: .75
+                pos_hint: {"center_x": .5, "top": .575}
+                hint_text: "Password"
+                password: True
+                font_size: '18sp'
+                cursor_width: '1.5sp'
+                multiline: False
+                background_color: 1, 1, 1, 0
+                foreground_color: rgba(0, 0, 59,255)
+                cursor_color: rgba(0, 0, 59,255)
+            MDFloatLayout:
+                pos_hint: {'center_x': .45, 'center_y': .0}
+                size_hint_y: .03
+                md_bg_color: rgba(178, 178, 178, 255)
+
+        Button:
+            text: 'LOGIN'
+            size_hint: .66, .065
+            background_color: 0, 0, 0, 0
+            pos_hint: {'center_x': .5, 'center_y': .38}
+            on_release:
+                root.login(username.text, password.text)
+            canvas.before:
+                Color:
+                    rgb: rgba(52, 0, 231, 255)
+                RoundedRectangle:
+                    size: self.size
+                    pos: self.pos
+                    radius: [7]
+
+        MDTextButton:
+            text: 'Forgot Password?'
+            pos_hint: {'center_x': .5, 'center_y': .31}
+            color: rgba(68, 78, 132, 255)
+            font_size: '15sp'
+
+        MDLabel:
+            text: 'or'
+            color: rgba(50, 0, 231, 255)
+            pos_hint: {'center_y': .26}
+            font_size: '15sp'
+            halign: 'center'
+
+        MDFloatLayout:
+            md_bg_color: rgba(168, 178, 178, 255)
+            size_hint: .3, .002
+            pos_hint: {'center_x': .3, 'center_y': .258}
+
+        MDFloatLayout:
+            md_bg_color: rgba(168, 178, 178, 255)
+            size_hint: .3, .002
+            pos_hint: {'center_x': .7, 'center_y': .258}
+
+        MDLabel:
+            text: 'Social Media Login'
+            font_size: '13sp'
+            halign: 'center'
+            pos_hint: {'center_y': .16}
+            color: rgba(135, 133, 193, 255)
+
+        MDGridLayout:
+            cols: 3
+            size_hint: .48, .07
+            pos_hint: {'center_x': .5, 'center_y': .1}
+            Image:
+                source: 'asset/google.png'
+            Image:
+                source: 'asset/facebook.png'
+            Image:
+                source: 'asset/twitter.png'
+
+        MDLabel:
+            text: "Don't have an account?"
+            font_size: '11sp'
+            pos_hint: {'center_x': .68, 'center_y': .04}
+            color: rgba(135, 133, 193, 255)
+        MDTextButton:
+            text: "Sign up"
+            font_size: '11sp'
+            pos_hint: {'center_x': .72, 'center_y': .04}
+            color: rgba(135, 133, 193, 255)
+            on_release:
+                root.manager.transition.direction = 'left'
+                root.manager.current = 'signup screen'
+
+
+
+
+
+<SignUpScreen>:
+    username: username
+    password: password
+    MDFloatLayout:
+        MDIconButton:
+            icon: 'arrow-left'
+            pos_hint: {'center_y': .95}
+            user_font_size: '30sp'
+            theme_text_color: 'Custom'
+            text_color: rgba(26, 24, 58, 255)
+            on_release:
+                root.manager.transition.direction = 'right'
+                root.manager.current = 'main screen'
+
+        MDLabel:
+            text: 'H I !'
+            font_size: '26sp'
+            pos_hint: {'center_x': .6, 'center_y': .85}
+            color: rgba(0, 0, 59, 255)
+
+        MDLabel:
+            text: 'Create a new account'
+            font_size: '18sp'
+            pos_hint: {'center_x': .6, 'center_y': .8}
+            color: rgba(127, 127, 127, 255)
+
+        MDFloatLayout:
+            size_hint: .75, .07
+            pos_hint: {'center_x': .55, 'center_y': .75}
+            TextInput:
+                id: username
+                size_hint_y: .75
+                pos_hint: {"center_x": .5, "top": .7}
+                hint_text: "Email"
+                font_size: '18sp'
+                cursor_width: '1.5sp'
+                multiline: False
+                background_color: 1, 1, 1, 0
+                foreground_color: rgba(0, 0, 59,255)
+                cursor_color: rgba(0, 0, 59,255)
+            MDFloatLayout:
+                pos_hint: {'center_x': .45, 'center_y': .0}
+                size_hint_y: .03
+                md_bg_color: rgba(178, 178, 178, 255)
+
+        MDFloatLayout:
+            size_hint: .75, .07
+            pos_hint: {'center_x': .55, 'center_y': .65}
+            TextInput:
+                id: fullname
+                size_hint: .5, .75
+                pos_hint: {"center_x": .25, "top": .575}
+                hint_text: "Fullname"
+                font_size: '18sp'
+                cursor_width: '1.5sp'
+                multiline: False
+                background_color: 1, 1, 1, 0
+                foreground_color: rgba(0, 0, 59,255)
+                cursor_color: rgba(0, 0, 59,255)
+
+            TextInput:
+                id: lastname
+                size_hint: .5, .75
+                pos_hint: {"center_x": .7, "top": .575}
+                hint_text: "Lastname"
+                font_size: '18sp'
+                cursor_width: '1.5sp'
+                multiline: False
+                background_color: 1, 1, 1, 0
+                foreground_color: rgba(0, 0, 59,255)
+                cursor_color: rgba(0, 0, 59,255)
+            MDFloatLayout:
+                pos_hint: {'center_x': .45, 'center_y': .0}
+                size_hint_y: .03
+                md_bg_color: rgba(178, 178, 178, 255)
+
+        MDFloatLayout:
+            size_hint: .75, .07
+            pos_hint: {'center_x': .55, 'center_y': .53}
+            TextInput:
+                id: password
+                size_hint_y: .75
+                pos_hint: {"center_x": .5, "top": .575}
+                hint_text: "Password"
+                password: True
+                font_size: '18sp'
+                cursor_width: '1.5sp'
+                multiline: False
+                background_color: 1, 1, 1, 0
+                foreground_color: rgba(0, 0, 59,255)
+                cursor_color: rgba(0, 0, 59,255)
+            MDFloatLayout:
+                pos_hint: {'center_x': .45, 'center_y': .0}
+                size_hint_y: .03
+                md_bg_color: rgba(178, 178, 178, 255)
+
+        Button:
+            text: 'SIGNUP'
+            size_hint: .66, .065
+            background_color: 0, 0, 0, 0
+            pos_hint: {'center_x': .5, 'center_y': .38}
+            on_release:
+                on_press: root.signup(username.text, fullname.text, lastname.text, password.text)
+            canvas.before:
+                Color:
+                    rgb: rgba(52, 0, 231, 255)
+                RoundedRectangle:
+                    size: self.size
+                    pos: self.pos
+                    radius: [7]
+
+        MDTextButton:
+            text: 'Forgot Password?'
+            pos_hint: {'center_x': .5, 'center_y': .31}
+            color: rgba(68, 78, 132, 255)
+            font_size: '15sp'
+
+        MDLabel:
+            text: 'or'
+            color: rgba(50, 0, 231, 255)
+            pos_hint: {'center_y': .26}
+            font_size: '15sp'
+            halign: 'center'
+
+        MDFloatLayout:
+            md_bg_color: rgba(168, 178, 178, 255)
+            size_hint: .3, .002
+            pos_hint: {'center_x': .3, 'center_y': .258}
+
+        MDFloatLayout:
+            md_bg_color: rgba(168, 178, 178, 255)
+            size_hint: .3, .002
+            pos_hint: {'center_x': .7, 'center_y': .258}
+
+        MDLabel:
+            text: 'Social Media Login'
+            font_size: '13sp'
+            halign: 'center'
+            pos_hint: {'center_y': .16}
+            color: rgba(135, 133, 193, 255)
+
+        MDGridLayout:
+            cols: 3
+            size_hint: .48, .07
+            pos_hint: {'center_x': .5, 'center_y': .1}
+            Image:
+                source: 'asset/google.png'
+            Image:
+                source: 'asset/facebook.png'
+            Image:
+                source: 'asset/twitter.png'
+
+        MDLabel:
+            text: "Have an account?"
+            font_size: '11sp'
+            pos_hint: {'center_x': .68, 'center_y': .04}
+            color: rgba(135, 133, 193, 255)
+        MDTextButton:
+            text: "Login up"
+            font_size: '11sp'
+            pos_hint: {'center_x': .72, 'center_y': .04}
+            color: rgba(135, 133, 193, 255)
+            on_release:
+                root.manager.transition.direction = 'left'
+                root.manager.current = 'login screen'
+
+
+
+<AddToCartScreen>:
+    slug: ''
+	title: head
+	price: price
+	image: 'previous_image'
+    description: description
+	md_bg_color: 0,0,0,0
+    ScrollView:
+        do_scroll_x: False
+#        effect_cls: StiffScrollEffect
+        MDList:
+            cols: 1
+            padding: 0
+
+            MDToolbar:
+                md_bg_color: 0,0,0,0
+                elevation: 0
+                pos_hint: {"top": 1}
+                left_action_items: [['chevron-left', lambda x: app.go_back()]]
+                # right_action_items[["heart"]]
+                specific_text_color: 0,0,0,1
+
+                MDIconMagicButton:
+                    icon: "heart-outline"
+                    on_release:
+                        print('liked')
+                        self.icon = "heart" if self.icon == "heart-outline" else "heart-outline"
+
+            	MDIconMagicButton:
+            		icon: "cart-plus"
+            		on_release: print('on_cart')
+
+
+            FitImage:
+                id: previous_image
+                size_hint: None, None
+                orientation: 'horizontal'
+                size: Window.width, dp(Window.height * 45 // 100)
+                radius: [0, 0, dp(20), dp(20)]
+                source: 'http://{}{}'.format(ADDRESS, root.image)
+
+            MDBoxLayout:
+                padding: "25dp"
+                adaptive_height: True
+
+                MDLabel:
+                    id: head
+#                    text: root.title
+                    font_style: "H6"
+                    adaptive_height: True
+
+                Widget:
+                    size_hint_x: .1
+
+                MDLabel:
+                    id: price
+#                    text: root.price
+                    halign: "right"
+                    adaptive_height: True
+
+            MDBoxLayout:
+                adaptive_height: True
+                padding: "25dp"
+                orientation: 'vertical'
+                MDLabel:
+                    id: description
+                    adaptive_size: True
+                    markup: True
+                    # color: root.theme_cls.text_color
+                    text:
+                        "- Beautiful 3D Design Dial, with '7' marking\n" \
+                        "- Comfortable Soft Leather Watch Band\n" \
+                        "- Durable stainless steel buckle\n" \
+                        "- Precise Quartz movement for accurate time keeping\n" \
+                        "- Comfortable for Everyday Wear\n\n" \
+
+                        "[color={COLOR}][b]WARRANTY INFORMATION:[/b][/color]\n" \
+                        "- For defective products, buyers may return the watch for refund within\n" \
+                        "  the Zalora PH return period (within 30 days after delivery).\n\n" \
+
+                        "[color={COLOR}][b]THIS WARRANTY DOES NOT COVER:[/b][/color]\n" \
+                        "- Damage resulting from impact, accidents, mishandling, or abuse (dents, crushing, knocks or impacts).\n" \
+                        "- Loss of water resistance after 24 months without proper and documented maintenance."
+    
+        #             MagicButton:
+        #                 id: clear_button
+        #                 text: "ADD TO CART"
+        #                 increment_width: dp(150)
+        #                 elevation: 10
+        #                 opacity: 0
+        #                disabled: True
+        #                 pos_hint: {"center_x": .5, "center_y": .1}
+        #                 md_bg_color: gch(colors[root.theme_cls.primary_palette]["200"])
+                MDBoxLayout:
+                    adaptive_height: True
+                    MDRaisedButton:
+                        id: button
+                        text: "ADD TO CART"
+                        pos_hint: {"center_x": .5, "center_y": .5}
+                        on_release:
+                            root.add_item_to_cart(root.slug)
+#                            app.menu.open()
+
+<Signin_up@Screen>:
+    MDFloatLayout:
+        Image:
+            source: 'images/cow.png'
+            size_hint: .8, .1
+            pos_hint: {'center_x': .15, 'center_y': .95}
+
+        Image:
+            source: 'images/illu.png'
+            size_hint: .7, .7
+            pos_hint: {'center_x': .5, 'center_y': .7}
+        MDLabel:
+            text: 'H E L L O !'
+            pos_hint: {'center_y': .4}
+            font_size: '25sp'
+            halign: 'center'
+
+        MDLabel:
+            text: 'WELCOME'
+            pos_hint: {'center_y': .35}
+            font_size: '18sp'
+            halign: 'center'
+
+        Button:
+            text: 'LOGIN'
+            size_hint: .66, .065
+            background_color: 0, 0, 0, 0
+            pos_hint: {'center_x': .5, 'center_y': .28}
+            on_release:
+                root.manager.transition.direction = 'left'
+                root.manager.current = 'login screen'
+            canvas.before:
+                Color:
+                    rgb: rgba(52, 0, 231, 255)
+                RoundedRectangle:
+                    size: self.size
+                    pos: self.pos
+                    radius: [15]
+
+        Button:
+            text: 'SIGN UP'
+            size_hint: .66, .065
+#            background_color: 0, 0, 0, 0
+            pos_hint: {'center_x': .5, 'center_y': .2}
+            on_release:
+                root.manager.transition.direction = 'left'
+                root.manager.current = 'signup screen'
+            canvas.before:
+                Color:
+#                    rgb: rgba(52, 0, 231, 255)
+                Line:
+                    width: 1.2
+                    rounded_rectangle: self.x, self.y, self.width, self.height, 5, 5, 5, 5
+<MDIconMagicButton@MagicBehavior+MDIconButton>
+    theme_text_color: "Custom"
+    text_color: 1, 1, 1, 1
+
+<Checkout>:
+    on_pre_enter:
+        root.fetched()
+    MDFloatLayout:
+        md_bg_color: rgba(178, 178, 178, 255)
+        MDFloatLayout:
+            MDToolbar:
+#                md_bg_color: 0,0,0,0
+                text: 'CHECHOUT'
+                elevation: 0
+                pos_hint: {"top": 1}
+                specific_text_color: 0,0,0,1
+            MDIconButton:
+                icon: 'arrow-left'
+                pos_hint: {'center_y': .95}
+                user_font_size: '30sp'
+                theme_text_color: 'Custom'
+                text_color: rgba(26, 24, 58, 255)
+                on_release:
+                    root.manager.transition.direction = 'right'
+                    root.manager.current = 'main screen'
+
+
+        MDCard:
+            adaptive_size: True
+            orientation: 'vertical'
+            padding: 5, 0, 5, 5
+#            height: self.minimum_height*7
+#        	height: dp(300)
+            elevation: dp(17)
+            size_hint: .8, .7
+#            size: .9, .5
+            radius: [dp(5),  dp(5), dp(10), dp(10)]
+            pos_hint: {"center_x": .5, "center_y": .5}
+
+            MDTextField:
+                id: address
+                size_hint_x: .9
+#                pos_hint: {"center_x": .5, "top": .7}
+                hint_text: "Address"
+#                on_text: root.update_address(self.text)
+
+            MDTextField:
+                id: address
+                size_hint_x: .9
+#                pos_hint: {"center_x": .5, "top": .7}
+                hint_text: "Address"
+#                on_text: root.update_address(self.text)
+
+            MDTextField:
+                id: address
+                size_hint_x: .9
+#                pos_hint: {"center_x": .5, "top": .7}
+                hint_text: "Address"
+#                on_text: root.update_address(self.text)
+
+            MDTextField:
+                id: address
+                size_hint_x: .9
+#                pos_hint: {"center_x": .5, "top": .7}
+                hint_text: "Address"
+#                on_text: root.update_address(self.text)
+
+
+
+
+
+
+
