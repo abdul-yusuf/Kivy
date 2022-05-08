@@ -39,22 +39,22 @@ class MainScreen(Screen):
 	total = StringProperty()
 	cartitems = ObjectProperty()
 	dialog = None
-    transaction = Transaction(authorization_key="pk_myauthorizationkeyfromthepaystackguys", callback=transaction_callback)
-    response = transaction.charge("customer@domain.com", "CustomerAUTHcode", 10000) #Charge a customer N100.
-    response  = transaction.verify(refcode) #Verify a transaction given a reference code "refcode".
-    transaction_callback('charge',json,response)
+#     transaction = Transaction(authorization_key="pk_myauthorizationkeyfromthepaystackguys", callback=transaction_callback)
+#     response = transaction.charge("customer@domain.com", "CustomerAUTHcode", 10000) #Charge a customer N100.
+#     response  = transaction.verify(refcode) #Verify a transaction given a reference code "refcode".
+#     transaction_callback('charge',json,response)
 
-    #Instantiate the transaction object to handle transactions.
-    #Pass in your authorization key - if not set as environment variable PAYSTACK_AUTHORIZATION_KEY
-    # warning use public key not your secret key
-    #transaction = Transaction(authorization_key="pk_test_10354c2a51c26ce12137de7dd2520f146a177fea", callback=transaction_callback)
-    #response = transaction.charge("customer@domain.com", "CustomerAUTHcode", 10000) #Charge a customer N100.
-    #response  = transaction.verify(refcode) #Verify a transaction given a reference code "refcode".
+#     #Instantiate the transaction object to handle transactions.
+#     #Pass in your authorization key - if not set as environment variable PAYSTACK_AUTHORIZATION_KEY
+#     # warning use public key not your secret key
+#     #transaction = Transaction(authorization_key="pk_test_10354c2a51c26ce12137de7dd2520f146a177fea", callback=transaction_callback)
+#     #response = transaction.charge("customer@domain.com", "CustomerAUTHcode", 10000) #Charge a customer N100.
+#     #response  = transaction.verify(refcode) #Verify a transaction given a reference code "refcode".
 
 
-	def transaction_callback(action, result_type,request,result):
-		if action == 'charge':pass
-            #print('charged')
+# 	def transaction_callback(action, result_type,request,result):
+# 		if action == 'charge':pass
+#             #print('charged')
 
 	# show a popup dialoge box
 	def show_alert_dialog(self):
