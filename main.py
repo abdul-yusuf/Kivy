@@ -14,7 +14,7 @@ from kivy.uix.recycleview import RecycleView, RecycleViewBehavior
 from kivy.network.urlrequest import UrlRequest
 from json import dumps
 from kivy.core.window import Window
-from kivypaystack import Transaction, Customer, Plan
+# from kivypaystack import Transaction, Customer, Plan
 from kivy.uix.floatlayout import FloatLayout
 
 # Window.size = (610,880)
