@@ -7,19 +7,38 @@ from kivymd.uix.dialog import MDDialog
 from kivymd.uix.menu import MDDropdownMenu
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivymd.uix.card import MDCardSwipe, MDCard
-from kivy.properties import ObjectProperty, StringProperty, Clock
+from kivy.properties import ObjectProperty, StringProperty, ListProperty, DictProperty,Clock
 from kivy.uix.recycleview import RecycleView, RecycleViewBehavior
 # from list import listofitems
 # from cartlist import cartitems
 from kivy.network.urlrequest import UrlRequest
 from json import dumps
 from kivy.core.window import Window
-from kivypaystack import Transaction, Customer, Plan
+# from kivypaystack import Transaction, Customer, Plan
 from kivy.uix.floatlayout import FloatLayout
 
-# Window.size = (610,880)
+
+
+from paystackapi.paystack import Paystack
+paystack_secret_key = "sk_test_930834df1933e92b151cfc9f5adb3ebce4bf2491"
+paystack = Paystack(secret_key=paystack_secret_key)
+
+try:
+	from kivy.clock import Clock
+	from jnius import autoclass
+	from android.runnable import run_on_ui_thread
+
+	global webview
+	WebView = autoclass('android.webkit.WebView')
+	WebViewClient = autoclass('android.webkit.WebViewClient')
+	activity = autoclass('org.kivy.android.PythonActivity').mActivity
+except Exception:
+	print('print Erro {pyjnius}')
+
+
+Window.size = (610,880)
 #Global variables
-ADDRESS = '127.168.10.2:8080'
+ADDRESS = '127.0.0.1:8000'
 authorization = False
 headers = {}
 cartitems = []
@@ -38,6 +57,8 @@ class MainScreen(Screen):
 	data_fecth = listofitems
 	total = StringProperty()
 	cartitems = ObjectProperty()
+	datas = DictProperty([])
+
 	dialog = None
 #     transaction = Transaction(authorization_key="pk_myauthorizationkeyfromthepaystackguys", callback=transaction_callback)
 #     response = transaction.charge("customer@domain.com", "CustomerAUTHcode", 10000) #Charge a customer N100.
@@ -79,6 +100,24 @@ class MainScreen(Screen):
 	def request_cart(self):
 		req = UrlRequest(f'http://{ADDRESS}/order-summary/', req_headers=headers, on_success=self.cart_fetched)
 
+
+	def checkout_webview(self, *args):
+		# print("webview", args)
+		ref_code = args[0]['ref_code']
+		email = args[0]['items'][0]['user']['email']
+		total = int(args[0]['total'])*100
+		is_ordered = False if args[0]['payment']==None else True
+		print('webview',f'({ref_code}, {email}, {total})')
+
+		if is_ordered == False:
+			from paystackapi.transaction import Transaction
+			response = Transaction.initialize(reference=ref_code,amount=total, email=email)
+			self.manager.get_screen('checkout').ref_code = ref_code
+		else:
+			print('Order is already on Process')
+
+
+
 	def cart_load(self):
 		if authorization:
 			self.request_cart()
@@ -86,7 +125,9 @@ class MainScreen(Screen):
 
 	def cart_fetched(self, req, result):
 		global cartitems
-		items = req.result
+
+		items = req.result 
+		self.datas = req.result
 		self.ids.total_amount.text = '$ '+str(items['total'])
 		if True:
 			cartitems = []
@@ -96,8 +137,9 @@ class MainScreen(Screen):
 			if True:
 				cartitems.append(data)
 		self.ids.cart_rv.data = cartitems
-		print(cartitems)
+		print(items)
 		self.ids.cart_rv.refresh_from_data()
+		return self.datas
 
 	def cart_data_refresh(self):
 		self.ids.cart_page.data = cartitems
@@ -254,8 +296,30 @@ class TCard(MDCard):
 
 		MDApp.get_running_app().screen.current = 'addtocart'
 class Checkout(Screen):
+	ref_code = StringProperty()
+	try:
+		@run_on_ui_thread
+		def create_webview(self, *args):
+
+			webview = WebView(activity)
+			
+			
+			settings = webview.getSettings()
+			settings.setJavaScriptEnabled(True)
+			settings.setUseWideViewPort(True) # enables viewport html meta tags
+			settings.setLoadWithOverviewMode(True) # uses viewport
+			settings.setSupportZoom(True) # enables zoom
+			settings.setBuiltInZoomControls(True) # enables zoom controls
+			wvc = WebViewClient()
+			webview.setWebViewClient(wvc)
+			activity.setContentView(webview)
+			webview.loadUrl(f'https://api.paystack.co/transaction/initialize/{self.ref_code}')
+	except:
+		pass
+
 	def fetched(self):
 		print('checked')
+		Clock.schedule_once(self.create_webview, 0)
 class RV(RecycleView):
 	def __init__(self, **kwargs):
 		super(RV, self).__init__(**kwargs)

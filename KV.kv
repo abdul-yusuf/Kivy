@@ -3,7 +3,7 @@
 #:import cartitems main.cartitems
 #:import ADDRESS main.ADDRESS
 
-<Circularbtn>:
+<Circularbtn@MDRaisedButton>:
     size_hint: None, None
     size: "40dp","40dp"
     radius: self.size[0]/2
@@ -107,16 +107,32 @@
 
 <Mainscroll@MDFloatLayout>:
     size_hint_y: .2
-    TextInput:
-        hint_text: 'Search'
-        size_hint: .9, .4
+    # TextInput:
+    #     hint_text: 'Search'
+    #     size_hint: .9, .4
+    #     pos_hint: {'center_x':0.5, 'center_y':0.7}
+    #     font_size: '18sp'
+    #     cursor_width: '1.5sp'
+    #     multiline: False
+    #     background_color: 1, 1, 1, 0
+    #     foreground_color: rgba(0, 0, 59,255)
+    #     cursor_color: rgba(0, 0, 59,255)
+    canvas:
+        Color:
+            # rgba: [0, 0, 1, 1]
+            rgba: utils.get_color_from_hex('#74A3FC')
+
+    
+        RoundedRectangle:
+            size: self.size[0], self.size[1]
+            pos: self.pos
+            # radius: [dp(20), dp(20),0, 0]
+        
+
+    MDTextField:
+        size_hint: .9,None
         pos_hint: {'center_x':0.5, 'center_y':0.7}
-        font_size: '18sp'
-        cursor_width: '1.5sp'
-        multiline: False
-        background_color: 1, 1, 1, 0
-        foreground_color: rgba(0, 0, 59,255)
-        cursor_color: rgba(0, 0, 59,255)
+
 
     MDFloatLayout:
         pos_hint: {'center_x': .5, 'center_y': .68}
@@ -130,22 +146,22 @@
         cols: 4
         md_bg_color: rgba(178, 178, 178, 255)
         pos_hint: {'center_x':0.5, 'center_y':0.1}
-        Image:
-            source: 'images/goat.png'
-#            pos_hint: {'center_x':0.5, 'center_y':0.6}
-            font_size: '10sp'
-        Image:
-            source: 'images/goat.png'
-#            pos_hint: {'center_x':0.5, 'center_y':0.6}
-            font_size: '10sp'
-        Image:
-            source: 'images/goat.png'
-#            pos_hint: {'center_x':0.5, 'center_y':0.6}
-            font_size: '10sp'
-        Image:
-            source: 'images/goat.png'
-#            pos_hint: {'center_x':0.5, 'center_y':0.6}
-            font_size: '10sp'
+#         Image:
+#             source: 'images/goat.png'
+# #            pos_hint: {'center_x':0.5, 'center_y':0.6}
+#             font_size: '10sp'
+#         Image:
+#             source: 'images/goat.png'
+# #            pos_hint: {'center_x':0.5, 'center_y':0.6}
+#             font_size: '10sp'
+#         Image:
+#             source: 'images/goat.png'
+# #            pos_hint: {'center_x':0.5, 'center_y':0.6}
+#             font_size: '10sp'
+#         Image:
+#             source: 'images/goat.png'
+# #            pos_hint: {'center_x':0.5, 'center_y':0.6}
+#             font_size: '10sp'
     MDFloatLayout:
         pos_hint: {'center_x': .5, 'center_y': .42}
         size_hint_y: .003
@@ -200,6 +216,7 @@ WindowManager:
 <MainScreen>:
     id: main_screen
     rvv: rvv
+
     BoxLayout:
         orientation: 'vertical'
         
@@ -292,7 +309,10 @@ WindowManager:
                     Circularbtn:
                         pos_hint:{"center_x": .9, "center_y":.07}
                         elevation: 7
-                        on_release: root.manager.current = 'checkout'
+                        on_release: 
+                            root.manager.current = 'checkout'
+                            root.checkout_webview(root.datas)
+                            # root.manager.get_screen('checkout').label.text
 					MDBoxLayout:
 					    total: '20'
 						adpative_height: True
@@ -722,7 +742,7 @@ WindowManager:
                 id: previous_image
                 size_hint: None, None
                 orientation: 'horizontal'
-                size: Window.width, dp(Window.height * 45 // 100)
+                # size: Window.width, dp(Window.height * 45 // 100)
                 radius: [0, 0, dp(20), dp(20)]
                 source: 'http://{}{}'.format(ADDRESS, root.image)
 
